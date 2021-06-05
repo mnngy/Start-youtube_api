@@ -2,10 +2,12 @@ package com.example.youtube_tutorial.controller.youtube;
 
 import com.example.youtube_tutorial.dto.youtube.YouTubeDto;
 import com.example.youtube_tutorial.service.youtube.spec.YouTubeProvider;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class YouTubeController {
@@ -20,5 +22,35 @@ public class YouTubeController {
     @GetMapping("youtube")
     public YouTubeDto index() {
         return youTubeProvider.get();
+    }
+
+    @GetMapping("main")
+    public String moveMain(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("sessionMemberId") != null) {
+            return "main";
+        } else {
+            return "login";
+        }
+    }
+
+    @GetMapping("search-query")
+    public String moveSearchQuery(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("sessionMemberId") != null) {
+            return "search-query";
+        } else {
+            return "login";
+        }
+    }
+
+    @GetMapping("search-channel")
+    public String moveSearchChannel(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("sessionMemberId") != null) {
+            return "main";
+        } else {
+            return "login";
+        }
     }
 }

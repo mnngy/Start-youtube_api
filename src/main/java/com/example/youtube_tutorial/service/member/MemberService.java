@@ -69,19 +69,19 @@ public class MemberService {
 
                 PrintWriter out = response.getWriter();
                 out.println("<script>" +
-                        "alert('로그인을 성공했습니다!');" +
+                        "alert('로그인을 하셨습니다.'); location.href='/main';" +
                         "</script>");
                 out.close();
             } else if (result == 0) {
                 PrintWriter out = response.getWriter();
                 out.println("<script>" +
-                        "alert('비밀번호가 일치하지 않습니다.');" +
+                        "alert('비밀번호가 일치하지 않습니다.'); location.href='/';" +
                         "</script>");
                 out.close();
             } else {
                 PrintWriter out = response.getWriter();
                 out.println("<script>" +
-                        "alert('아이디가 일치하지 않습니다.');" +
+                        "alert('아이디가 일치하지 않습니다.'); location.href='/';" +
                         "</script>");
                 out.close();
             }
