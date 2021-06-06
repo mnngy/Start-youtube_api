@@ -34,11 +34,21 @@ public class YouTubeController {
         }
     }
 
-    @GetMapping("search-query")
+    @GetMapping("search-title")
     public String moveSearchQuery(HttpServletRequest request) {
         HttpSession session = request.getSession();
         if (session.getAttribute("sessionMemberId") != null) {
-            return "search-query";
+            return "search-title";
+        } else {
+            return "login";
+        }
+    }
+
+    @GetMapping("search-title-detail")
+    public String moveSearchTitleDetail(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("sessionMemberId") != null) {
+            return "search-title-detail";
         } else {
             return "login";
         }
@@ -48,7 +58,7 @@ public class YouTubeController {
     public String moveSearchChannel(HttpServletRequest request) {
         HttpSession session = request.getSession();
         if (session.getAttribute("sessionMemberId") != null) {
-            return "main";
+            return "search-channel";
         } else {
             return "login";
         }

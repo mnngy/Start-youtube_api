@@ -1,0 +1,193 @@
+<!DOCTYPE HTML>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>나의 유튜브 - 검색</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<div class="inner">
+
+							<!-- Logo -->
+							<a href="main" class="logo">
+								<span class="symbol"><img src="images/bg_youtube_logo.png" alt="" /></span><span class="title">나의 유튜브</span>
+							</a>
+
+							<!-- Nav -->
+								<nav>
+									<ul>
+										<li><a href="#menu">Menu</a></li>
+									</ul>
+								</nav>
+
+						</div>
+					</header>
+
+				<!-- Menu -->
+				<nav id="menu">
+					<h2>Menu</h2>
+					<ul>
+						<li><a href="main">메인</a></li>
+						<li><a href="search-title">동영상 제목으로 검색하기</a></li>
+						<li><a href="search-title-detail">동영상 제목으로 상세하게 검색하기</a></li>
+						<li><a href="search-channel">동영상 채널로 검색하기</a></li>
+					</ul>
+				</nav>
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<h1>동영상 제목으로 상세하게 검색하기</h1>
+
+							<!-- Form -->
+							<section>
+								<form id="form">
+									<div class="row gtr-uniform">
+										<div class="col-6 col-12-xsmall">
+											<input type="text" name="" id="query" value="" placeholder="내용을 입력해주세요" />
+										</div>
+										<div class="col-12">
+											<ul class="actions">
+												<li><input type="submit" value="검색" class="primary"></li>
+												<li><input type="reset" value="취소" onclick="location.reload()"/></li>
+											</ul>
+										</div>
+									</div>
+								</form>
+							</section>
+						</div>
+					</div>
+
+					<ul id="search-container" style="text-align: center; list-style: none;"></ul>
+
+					<!-- Footer -->
+					<footer id="footer">
+						<div class="inner">
+							<ul class="copyright">
+								<li>학부: 컴퓨터공학부</li>
+								<li>학번: 20161922</li>
+								<li>이름: 민인규</li>
+							</ul>
+						</div>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+	<script>
+		$(document).ready(function() {
+			var API_KEY = "AIzaSyCt3BBVnzgxrLPp2DH6a3PtlFgBMxYP_W8";
+
+			var titleSort = false;
+			var dateSort = false;
+			var Ascending = true;
+
+			$("#form").submit(function (event) {
+				event.preventDefault();
+				var q = $("#query").val();
+				backSearch(q);
+			})
+
+			function backSearch(q, token) {
+				$('#search-container').empty();
+				$('#pageSwap').empty();
+				var data;
+				if(!token){
+					data = {
+						part : "snippet",
+						q : q,
+						type : "video",
+						videoCaption : "closedCaption",
+						key : API_KEY
+					};
+				}
+				else{
+					data = {
+						part : "snippet",
+						q : q,
+						pageToken : token,
+						type : "video",
+						videoCaption : "closedCaption",
+						key : API_KEY
+					};
+
+				}
+				$.get("https://www.googleapis.com/youtube/v3/search",data,function(response) {
+					console.log(response);
+					var nextPageToken = response.nextPageToken;
+					var prevPageToken = response.prevPageToken;
+					var arr = [];
+					$.each(response.items,function(i,item){
+						arr.push(item);
+					});
+					if(titleSort){
+						arr.sort(comparatorTitle);
+					}
+					else if(dateSort){
+						arr.sort(comparatorDate);
+					}
+					$.each(arr,function(i,item){
+						var output = getDivElement(item);
+						$("#search-container").append(output);
+					});
+				});
+			}
+
+			function comparatorDate(one,two){
+				if(Ascending){
+					return one.snippet.publishedAt<two.snippet.publishedAt?-1:1;
+				}
+				return t
+				wo.snippet.publishedAt<one.snippet.publishedAt?-1:1;
+			}
+			function comparatorTitle(one,two){
+				if(Ascending){
+					return one.snippet.title<two.snippet.title ? -1:1;
+				}
+				return two.snippet.title<one.snippet.title?-1:1;
+			}
+
+			function getDivElement(item){
+				var id = item.id.videoId;
+				var title = item.snippet.title;
+				var desc = item.snippet.description;
+				var thumb = item.snippet.thumbnails.high.url;
+				var channelTitle = item.snippet.channelTitle;
+				var videoDate = item.snippet.publishedAt;
+				var videoLink = "https://www.youtube.com/watch?v="+id;
+				var result = '<li>'+
+						'<div class ="imgresult">'+
+						'<img src="'+thumb+'">'+
+						'</div>'+
+						'<div class="textresult">'+
+						'<h3><a href="'+videoLink+'">'+ title+'</a></h3>'+
+						'<small>'+'<span class="channelTitle">'+channelTitle+'</span>'+'            '+videoDate+'</small>'+
+						'<p>'+desc+'</p>'+
+						'</div>'+
+						'</li>'+
+						'<div class="clearfix"></div>'+
+						'';
+				return result;
+			}
+		})
+	</script>
+</html>
