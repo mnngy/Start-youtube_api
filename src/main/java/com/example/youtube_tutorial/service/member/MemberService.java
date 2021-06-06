@@ -50,8 +50,9 @@ public class MemberService {
     /**
      * 회원가입 서비스
      */
-    public void memberjoin(MemberDto memberDto) {
+    public String memberjoin(MemberDto memberDto) {
         memberRepository.memberSave(memberDto);
+        return "redirect:/";
     }
 
     /**
